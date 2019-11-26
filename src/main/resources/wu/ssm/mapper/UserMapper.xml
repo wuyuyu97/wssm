@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wu.ssm.mapper.UserMapper">
+
+    <select id="selectAll" resultType="wu.ssm.model.UserModel">
+        SELECT * FROM ssm.User
+    </select>
+
+
+    <select id="selectOne" resultType="wu.ssm.model.UserModel">
+        SELECT * FROM ssm.User WHERE id = #{id}
+    </select>
+
+    <select id="SelectUsernameById" resultType="wu.ssm.model.UserModel">
+        SELECT * FROM ssm.User WHERE id = #{id}
+    </select>
+
+    <select id="selectOneByUsername" resultType="wu.ssm.model.UserModel">
+        SELECT * FROM ssm.User WHERE username = #{username}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ssm.User (username, password, role, updatedTime, createdTime, avatar, mail) VALUES (#{username}, #{password}, #{role}, #{updatedTime},#{createdTime}, #{avatar}, #{mail} )
+    </insert>
+    
+    <update id="update">
+        UPDATE ssm.User SET username = #{username}, password=#{password}, updatedTime=#{updatedTime} WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM ssm.User WHERE id = #{id}
+    </delete>
+
+
+</mapper>

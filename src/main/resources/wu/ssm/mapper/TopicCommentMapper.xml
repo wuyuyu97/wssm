@@ -1,0 +1,29 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wu.ssm.mapper.TopicCommentMapper">
+
+
+    <select id="cselectAllByTopicId" resultType="wu.ssm.model.TopicCommentModel">
+        SELECT ssm.TopicComment.content,
+               ssm.User.username
+        FROM
+            ssm.topiccomment left join  ssm.User
+            on ssm.TopicComment.userId = ssm.User.id
+        WHERE topicId = #{id}
+    </select>
+
+
+    <insert id="insert_comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ssm.TopicComment (topicid, content, userId, createdTime, updatedTime) VALUES (#{topicid}, #{content}, #{userId}, #{createdTime}, #{updatedTime})
+    </insert>
+
+<!--    根据UID找comment-->
+    <select id="findCommentByUserId" resultType="wu.ssm.model.TopicCommentModel">
+        SELECT * FROM ssm.TopicComment
+        WHERE ssm.TopicComment.userid = #{id}
+    </select>
+
+
+</mapper>

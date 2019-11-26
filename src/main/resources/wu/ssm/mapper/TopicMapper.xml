@@ -1,0 +1,91 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wu.ssm.mapper.TopicMapper">
+
+
+    <select id="selectAll" resultType="wu.ssm.model.TopicModel">
+        SELECT * FROM ssm.Topic
+    </select>
+
+    <select id="selectOne" resultType="wu.ssm.model.TopicModel">
+        SELECT * FROM ssm.Topic WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ssm.Topic (title, content, userId, createdTime, updatedTime, boardId) VALUES (#{title}, #{content}, #{userId}, #{createdTime}, #{updatedTime}, #{boardId})
+    </insert>
+
+    <insert id="insertcomment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ssm.TopicComment (content, userId) VALUES (#{content}, #{userId})
+    </insert>
+
+
+    <update id="update">
+        UPDATE ssm.Topic SET content = #{content}, title=#{title} WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM ssm.Topic WHERE id = #{id}
+    </delete>
+
+    <select id="selectOneWithId" resultType="wu.ssm.model.TopicModel">
+        SELECT * FROM ssm.Topic
+        WHERE id = #{id}
+    </select>
+
+
+
+    <select id="selectAllByUserId" resultType="wu.ssm.model.TopicModel">
+        SELECT * FROM ssm.Topic
+        WHERE userId = #{id}
+    </select>
+
+
+    <select id="findtitleByTopicId" resultType="wu.ssm.model.TopicModel">
+        SELECT topic.title FROM ssm.Topic
+        WHERE topic.id = #{id}
+    </select>
+
+<!--根据BoardId查询-->
+    <select id="selectTopicByBoardId" resultType="wu.ssm.model.TopicModel">
+        SELECT * FROM ssm.Topic
+        WHERE Topic.boardId = #{id}
+    </select>
+
+    <!--                property是映射到列结果的字段或属性-->
+    <!--                column 是数据库列名-->
+    <!--                result 注入的普通结果 -->
+    <!--                javaType组装一个model-->
+    <!--                association   是 关联javaType="wu.ssm.model.UserModel类-->
+    <!--                collection 是association的集合-->
+    <resultMap id="sselectOneWithCommentsAndUserMap" type="wu.ssm.model.TopicModel">
+        <id property="id" column="id" />
+        <result property="title"  column="title" />
+        <result property="content"  column="content" />
+        <collection property="commentList" ofType="wu.ssm.model.TopicCommentModel">
+            <!--            //返回集合-->
+            <id property="id" column="c_id" />
+            <result property="content"  column="c_content" />
+            <association property="user" column="u_username" javaType="wu.ssm.model.UserModel">
+                <result property="username" column="u_username" />
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="selectOneWithCommentsAndUser" resultMap="sselectOneWithCommentsAndUserMap">
+        SELECT
+            Topic.id,
+            Topic.title,
+            Topic.content,
+            TopicComment.id as c_id,
+            TopicComment.content as c_content,
+            User.username as u_username
+        FROM
+            ssm.Topic left join (TopicComment join User)
+                                on Topic.id = TopicComment.topicId and TopicComment.userId = User.id
+        where Topic.id = #{id}
+
+    </select>
+</mapper>
